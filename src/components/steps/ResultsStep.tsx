@@ -173,7 +173,8 @@ export const ResultsStep = ({ userData, improvedResume, prevStep }: ResultsStepP
           <Button
             variant="outline"
             onClick={() => {
-              // Go back to resume input step (skip processing step)
+              // Go back to questionnaire step (where you select your data)
+              prevStep();
               prevStep();
               prevStep();
             }}
