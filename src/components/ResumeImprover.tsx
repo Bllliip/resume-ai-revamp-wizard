@@ -1,4 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { supabase } from '@/integrations/supabase/client';
+import type { User } from '@supabase/supabase-js';
 import { WelcomeStep } from './steps/WelcomeStep';
 import { QuestionnaireStep } from './steps/QuestionnaireStep';
 import { ResumeInputStep } from './steps/ResumeInputStep';
@@ -30,6 +33,22 @@ export const ResumeImprover = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [userData, setUserData] = useState<Partial<UserData>>({});
   const [improvedResume, setImprovedResume] = useState<string>('');
+  const [user, setUser] = useState<User | null>(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        setUser(session?.user ?? null);
+      }
+    );
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   const steps = [
     { id: 'welcome', component: WelcomeStep },
@@ -40,6 +59,12 @@ export const ResumeImprover = () => {
   ];
 
   const nextStep = () => {
+    // If trying to go past welcome step and user is not authenticated, redirect to auth
+    if (currentStep === 0 && !user) {
+      navigate('/auth');
+      return;
+    }
+    
     if (currentStep < steps.length - 1) {
       setCurrentStep(currentStep + 1);
     }

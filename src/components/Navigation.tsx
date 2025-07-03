@@ -1,5 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
+import { supabase } from '@/integrations/supabase/client';
+import type { User } from '@supabase/supabase-js';
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -8,7 +10,7 @@ import {
   NavigationMenuTrigger,
 } from '@/components/ui/navigation-menu';
 import { Card } from '@/components/ui/card';
-import { Check, Target, FileText, TrendingUp, User, Search, Sparkles } from 'lucide-react';
+import { Check, Target, FileText, TrendingUp, User as UserIcon, Search, Sparkles } from 'lucide-react';
 
 interface NavigationProps {
   onStartImprovement: () => void;
@@ -16,6 +18,25 @@ interface NavigationProps {
 
 export const Navigation = ({ onStartImprovement }: NavigationProps) => {
   const [activeSection, setActiveSection] = useState<'home' | 'features' | 'pricing'>('home');
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        setUser(session?.user ?? null);
+      }
+    );
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+  };
 
   const scrollToSection = (section: 'home' | 'features' | 'pricing') => {
     setActiveSection(section);
@@ -75,11 +96,11 @@ export const Navigation = ({ onStartImprovement }: NavigationProps) => {
                           Strengthen your achievements with powerful, results-driven language
                         </p>
                       </div>
-                      <div className="space-y-2">
-                        <div className="flex items-center gap-2 text-primary">
-                          <User className="w-4 h-4" />
-                          <span className="font-semibold">Job Tailoring</span>
-                        </div>
+                       <div className="space-y-2">
+                         <div className="flex items-center gap-2 text-primary">
+                           <UserIcon className="w-4 h-4" />
+                           <span className="font-semibold">Job Tailoring</span>
+                         </div>
                         <p className="text-sm text-muted-foreground">
                           Match your resume to specific job descriptions and requirements
                         </p>
@@ -102,13 +123,28 @@ export const Navigation = ({ onStartImprovement }: NavigationProps) => {
           </NavigationMenu>
 
           <div className="flex items-center gap-3">
-            <Button 
-              variant="outline" 
-              className="border-primary text-primary hover:bg-primary hover:text-primary-foreground"
-              onClick={() => window.location.href = '/auth'}
-            >
-              Log In
-            </Button>
+            {user ? (
+              <>
+                <span className="text-sm text-muted-foreground">
+                  Welcome, {user.email}
+                </span>
+                <Button 
+                  variant="outline" 
+                  onClick={handleSignOut}
+                  className="border-primary text-primary hover:bg-primary hover:text-primary-foreground"
+                >
+                  Sign Out
+                </Button>
+              </>
+            ) : (
+              <Button 
+                variant="outline" 
+                className="border-primary text-primary hover:bg-primary hover:text-primary-foreground"
+                onClick={() => window.location.href = '/auth'}
+              >
+                Log In
+              </Button>
+            )}
             <Button 
               onClick={onStartImprovement}
               className="bg-gradient-primary text-primary-foreground hover:shadow-medium"
