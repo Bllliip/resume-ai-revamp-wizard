@@ -17,17 +17,35 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* Professional blue palette for career focus */
+    --primary: 214 84% 56%;
+    --primary-foreground: 0 0% 100%;
+    --primary-light: 214 100% 92%;
+    --primary-dark: 214 84% 46%;
 
-    --secondary: 210 40% 96.1%;
+    --secondary: 220 13% 91%;
     --secondary-foreground: 222.2 47.4% 11.2%;
 
-    --muted: 210 40% 96.1%;
+    --muted: 220 13% 95%;
     --muted-foreground: 215.4 16.3% 46.9%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 214 100% 92%;
+    --accent-foreground: 214 84% 56%;
+
+    /* Success green for completed steps */
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 100%;
+    --success-light: 142 76% 92%;
+
+    /* Professional gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(214 84% 56%), hsl(214 84% 46%));
+    --gradient-hero: linear-gradient(135deg, hsl(214 84% 56%), hsl(220 84% 66%));
+    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%), hsl(220 13% 98%));
+
+    /* Professional shadows */
+    --shadow-soft: 0 2px 8px hsl(214 84% 56% / 0.08);
+    --shadow-medium: 0 4px 20px hsl(214 84% 56% / 0.12);
+    --shadow-strong: 0 8px 32px hsl(214 84% 56% / 0.16);
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
