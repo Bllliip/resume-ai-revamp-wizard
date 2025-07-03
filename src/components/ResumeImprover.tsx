@@ -23,6 +23,7 @@ export interface BaseStepProps {
   updateUserData: (data: Partial<UserData>) => void;
   nextStep: () => void;
   prevStep: () => void;
+  goToStep?: (stepIndex: number) => void;
   currentStep: number;
   totalSteps: number;
   improvedResume: string;
@@ -76,6 +77,12 @@ export const ResumeImprover = () => {
     }
   };
 
+  const goToStep = (stepIndex: number) => {
+    if (stepIndex >= 0 && stepIndex < steps.length) {
+      setCurrentStep(stepIndex);
+    }
+  };
+
   const updateUserData = (data: Partial<UserData>) => {
     setUserData(prev => ({ ...prev, ...data }));
   };
@@ -89,6 +96,7 @@ export const ResumeImprover = () => {
         updateUserData={updateUserData}
         nextStep={nextStep}
         prevStep={prevStep}
+        goToStep={goToStep}
         currentStep={currentStep}
         totalSteps={steps.length}
         improvedResume={improvedResume}

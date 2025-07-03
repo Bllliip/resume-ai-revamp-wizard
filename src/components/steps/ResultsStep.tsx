@@ -12,9 +12,10 @@ interface ResultsStepProps extends Partial<BaseStepProps> {
   userData: Partial<any>;
   improvedResume: string;
   prevStep: () => void;
+  goToStep?: (stepIndex: number) => void;
 }
 
-export const ResultsStep = ({ userData, improvedResume, prevStep }: ResultsStepProps) => {
+export const ResultsStep = ({ userData, improvedResume, prevStep, goToStep }: ResultsStepProps) => {
   const [activeTab, setActiveTab] = useState('improved');
   const { toast } = useToast();
 
@@ -61,10 +62,8 @@ export const ResultsStep = ({ userData, improvedResume, prevStep }: ResultsStepP
           <Button
             variant="outline"
             onClick={() => {
-              // Go back to the welcome step (landing page)
-              for (let i = 0; i < 4; i++) {
-                prevStep();
-              }
+              // Go directly to welcome step (landing page)
+              goToStep?.(0);
             }}
             className="flex items-center gap-2"
           >
@@ -173,10 +172,8 @@ export const ResultsStep = ({ userData, improvedResume, prevStep }: ResultsStepP
           <Button
             variant="outline"
             onClick={() => {
-              // Go back to questionnaire step (where you select your data)
-              prevStep();
-              prevStep();
-              prevStep();
+              // Go directly to questionnaire step (where you select your data)
+              goToStep?.(1);
             }}
             className="flex items-center gap-2"
           >
