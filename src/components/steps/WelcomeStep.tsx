@@ -1,6 +1,8 @@
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { FileText, Sparkles, Target, TrendingUp, Check, User, Search } from 'lucide-react';
+import { Navigation } from '../Navigation';
+import { PricingSection } from '../PricingSection';
 
 import { BaseStepProps } from '../ResumeImprover';
 
@@ -11,8 +13,10 @@ interface WelcomeStepProps extends Partial<BaseStepProps> {
 export const WelcomeStep = ({ nextStep }: WelcomeStepProps) => {
   return (
     <div className="min-h-screen">
+      <Navigation onStartImprovement={nextStep} />
+      
       {/* Hero Section */}
-      <div className="flex items-center justify-center p-6 min-h-screen">
+      <section id="home" className="flex items-center justify-center p-6 min-h-screen pt-24">
         <div className="max-w-4xl w-full">
           <div className="text-center mb-12">
             <div className="inline-flex items-center justify-center w-20 h-20 bg-primary rounded-2xl mb-6">
@@ -27,8 +31,36 @@ export const WelcomeStep = ({ nextStep }: WelcomeStepProps) => {
             </p>
           </div>
 
-          {/* Features Grid */}
-          <div className="grid md:grid-cols-3 gap-6 mb-12">
+          {/* CTA */}
+          <div className="text-center">
+            <Button 
+              onClick={nextStep}
+              size="lg"
+              className="px-8 py-6 text-lg font-semibold bg-gradient-primary shadow-medium hover:shadow-strong transform hover:-translate-y-0.5 transition-all duration-200"
+            >
+              Get Started - Improve My Resume
+            </Button>
+            <p className="text-sm text-muted-foreground mt-4">
+              Takes 5 minutes • Completely free • No signup required
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section id="features" className="py-20 px-6">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-foreground mb-4">
+              Powerful Features to Transform Your Resume
+            </h2>
+            <p className="text-xl text-muted-foreground">
+              Everything you need to create a professional, ATS-optimized resume
+            </p>
+          </div>
+
+          {/* Main Features Grid */}
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
             <Card className="p-6 text-center bg-gradient-card shadow-soft border-0">
               <div className="inline-flex items-center justify-center w-12 h-12 bg-primary-light rounded-xl mb-4">
                 <Target className="w-6 h-6 text-primary" />
@@ -58,23 +90,21 @@ export const WelcomeStep = ({ nextStep }: WelcomeStepProps) => {
                 Strengthen your achievements with powerful, results-driven language
               </p>
             </Card>
-          </div>
 
-          {/* CTA */}
-          <div className="text-center">
-            <Button 
-              onClick={nextStep}
-              size="lg"
-              className="px-8 py-6 text-lg font-semibold bg-gradient-primary shadow-medium hover:shadow-strong transform hover:-translate-y-0.5 transition-all duration-200"
-            >
-              Get Started - Improve My Resume
-            </Button>
-            <p className="text-sm text-muted-foreground mt-4">
-              Takes 5 minutes • Completely free • No signup required
-            </p>
+            <Card className="p-6 text-center bg-gradient-card shadow-soft border-0">
+              <div className="inline-flex items-center justify-center w-12 h-12 bg-primary-light rounded-xl mb-4">
+                <User className="w-6 h-6 text-primary" />
+              </div>
+              <h3 className="text-lg font-semibold mb-2">Job Tailoring</h3>
+              <p className="text-muted-foreground text-sm">
+                Match your resume to specific job descriptions and requirements
+              </p>
+            </Card>
           </div>
         </div>
-      </div>
+      </section>
+
+      <PricingSection onStartImprovement={nextStep} />
 
       {/* Resume Tailoring Section */}
       <div className="bg-card py-16 px-6">
