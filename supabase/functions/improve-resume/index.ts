@@ -1,7 +1,7 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
-const geminiApiKey = Deno.env.get('GEMINI_API_KEY');
+const openaiApiKey = Deno.env.get('OPENAI_API_KEY');
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -16,30 +16,35 @@ serve(async (req) => {
   try {
     const { prompt, targetRole, industry, experienceLevel, keySkills, careerGoals, originalResume } = await req.json();
 
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent?key=${geminiApiKey}`, {
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
+        'Authorization': `Bearer ${openaiApiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        contents: [{
-          parts: [{
-            text: prompt
-          }]
-        }],
-        generationConfig: {
-          temperature: 0.7,
-          maxOutputTokens: 2000,
-        }
+        model: 'gpt-4.1-2025-04-14',
+        messages: [
+          {
+            role: 'system',
+            content: 'You are a professional resume improvement expert. Follow all instructions carefully and only work with the provided content.'
+          },
+          {
+            role: 'user',
+            content: prompt
+          }
+        ],
+        temperature: 0.7,
+        max_tokens: 2000,
       }),
     });
 
     if (!response.ok) {
-      throw new Error('Failed to improve resume with Gemini');
+      throw new Error('Failed to improve resume with OpenAI');
     }
 
     const data = await response.json();
-    const improvedResume = data.candidates[0]?.content?.parts[0]?.text || '';
+    const improvedResume = data.choices[0]?.message?.content || '';
 
     return new Response(JSON.stringify({ improvedResume }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
