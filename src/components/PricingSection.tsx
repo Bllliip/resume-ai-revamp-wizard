@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Check } from 'lucide-react';
+import { Check, X } from 'lucide-react';
 
 interface PricingSectionProps {
   onStartImprovement: () => void;
@@ -36,6 +36,14 @@ export const PricingSection = ({ onStartImprovement }: PricingSectionProps) => {
               <li className="flex items-center gap-3">
                 <Check className="w-5 h-5 text-success" />
                 <span className="text-foreground">Basic AI optimization</span>
+              </li>
+              <li className="flex items-center gap-3">
+                <X className="w-5 h-5 text-destructive" />
+                <span className="text-muted-foreground">Grammar and spell check</span>
+              </li>
+              <li className="flex items-center gap-3">
+                <X className="w-5 h-5 text-destructive" />
+                <span className="text-muted-foreground">ATS optimization</span>
               </li>
             </ul>
             
