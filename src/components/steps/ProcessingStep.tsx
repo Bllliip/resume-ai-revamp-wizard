@@ -55,36 +55,43 @@ export const ProcessingStep = ({ userData, nextStep, setImprovedResume }: Proces
   }, []);
 
   const improveResumeWithAI = async () => {
-    const prompt = `You are a professional resume improvement expert. IMPORTANT: You must ONLY improve the existing content provided below. DO NOT create, invent, or add any new information, experiences, jobs, skills, or qualifications that are not already present in the original resume.
+    const prompt = `You are a professional resume improvement expert. 
 
-STRICT INSTRUCTIONS:
-- Use ONLY the information, experiences, and details from the original resume provided
-- DO NOT invent new job titles, companies, achievements, or experiences
-- DO NOT add skills that are not mentioned in the original resume
-- DO NOT create fictional work history or educational background
-- ONLY rephrase, restructure, and optimize the existing content
-- Maintain all factual information exactly as provided
+CRITICAL RULES - FOLLOW EXACTLY:
+1. DO NOT add any contact information (phone, email, LinkedIn, address) that is not already in the original resume
+2. DO NOT change the person's profession, industry, or job titles - keep them exactly as provided
+3. DO NOT add any experiences, jobs, companies, or skills that are not in the original resume
+4. DO NOT add any fake or example information
+5. ONLY improve the writing, formatting, and structure of the existing content
+6. If the original resume is about finance/banking, keep it about finance/banking
+7. If the original resume mentions specific companies, keep those exact company names
+8. If the original resume has certain skills, only use those skills
 
-Target Role: ${userData.targetRole}
-Industry: ${userData.industry}
-Experience Level: ${userData.experienceLevel}
-Key Skills from questionnaire: ${userData.keySkills?.join(', ')}
-Career Goals: ${userData.careerGoals}
+The user wants to target: ${userData.targetRole || 'the same field as shown in their resume'}
+Industry: ${userData.industry || 'as shown in their resume'}
+Experience Level: ${userData.experienceLevel || 'as shown in their resume'}
+Skills they want to highlight: ${userData.keySkills?.join(', ') || 'skills from their existing resume'}
+Career Goals: ${userData.careerGoals || 'career progression in their current field'}
 
-ORIGINAL RESUME TO IMPROVE:
+ORIGINAL RESUME CONTENT (USE ONLY THIS INFORMATION):
 ${userData.originalResume}
 
-Please improve this resume by:
-1. Using stronger action verbs for existing achievements
-2. Better formatting and structure of existing content
-3. Optimizing existing content for ATS systems
-4. Improving grammar and professional language
-5. Better organization of existing information
-6. Quantifying existing achievements where possible
+TASK: Improve ONLY the existing content by:
+- Better grammar and professional language
+- Stronger action verbs for existing achievements
+- Better formatting and structure
+- More professional phrasing
+- Better organization of existing information
 
-Remember: ONLY work with the existing information provided. Do not add anything new.
+DO NOT ADD:
+- Contact information not already present
+- Job experiences not mentioned
+- Skills not listed
+- Education not mentioned
+- Fake companies or achievements
+- Example content
 
-Return only the improved resume content, no additional commentary.`;
+Return ONLY the improved resume using the exact information provided above.`;
 
     const response = await fetch('/functions/v1/improve-resume', {
       method: 'POST',
