@@ -55,21 +55,34 @@ export const ProcessingStep = ({ userData, nextStep, setImprovedResume }: Proces
   }, []);
 
   const improveResumeWithAI = async () => {
-    const prompt = `You are a professional resume improvement expert. Please improve the following resume for someone targeting a ${userData.targetRole} role in the ${userData.industry} industry with ${userData.experienceLevel} experience level.
+    const prompt = `You are a professional resume improvement expert. IMPORTANT: You must ONLY improve the existing content provided below. DO NOT create, invent, or add any new information, experiences, jobs, skills, or qualifications that are not already present in the original resume.
 
-Key skills to highlight: ${userData.keySkills?.join(', ')}
-Career goals: ${userData.careerGoals}
+STRICT INSTRUCTIONS:
+- Use ONLY the information, experiences, and details from the original resume provided
+- DO NOT invent new job titles, companies, achievements, or experiences
+- DO NOT add skills that are not mentioned in the original resume
+- DO NOT create fictional work history or educational background
+- ONLY rephrase, restructure, and optimize the existing content
+- Maintain all factual information exactly as provided
 
-Original Resume:
+Target Role: ${userData.targetRole}
+Industry: ${userData.industry}
+Experience Level: ${userData.experienceLevel}
+Key Skills from questionnaire: ${userData.keySkills?.join(', ')}
+Career Goals: ${userData.careerGoals}
+
+ORIGINAL RESUME TO IMPROVE:
 ${userData.originalResume}
 
-Please provide an improved version that:
-1. Uses strong action verbs and quantifiable achievements
-2. Is optimized for ATS (Applicant Tracking Systems)
-3. Has clear, professional formatting
-4. Highlights relevant skills and experience
-5. Uses industry-appropriate language
-6. Improves the overall structure and flow
+Please improve this resume by:
+1. Using stronger action verbs for existing achievements
+2. Better formatting and structure of existing content
+3. Optimizing existing content for ATS systems
+4. Improving grammar and professional language
+5. Better organization of existing information
+6. Quantifying existing achievements where possible
+
+Remember: ONLY work with the existing information provided. Do not add anything new.
 
 Return only the improved resume content, no additional commentary.`;
 
