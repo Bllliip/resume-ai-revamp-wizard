@@ -61,15 +61,15 @@ export const ResultsStep = ({ userData, improvedResume, prevStep }: ResultsStepP
           <Button
             variant="outline"
             onClick={() => {
-              // Go back to resume input step (skip processing step)
-              for (let i = 0; i < 2; i++) {
+              // Go back to the welcome step (landing page)
+              for (let i = 0; i < 4; i++) {
                 prevStep();
               }
             }}
             className="flex items-center gap-2"
           >
             <ArrowLeft className="w-4 h-4" />
-            Back
+            Back to Start
           </Button>
         </div>
 
