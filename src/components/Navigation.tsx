@@ -102,7 +102,11 @@ export const Navigation = ({ onStartImprovement }: NavigationProps) => {
           </NavigationMenu>
 
           <div className="flex items-center gap-3">
-            <Button variant="outline" className="border-primary text-primary hover:bg-primary hover:text-primary-foreground">
+            <Button 
+              variant="outline" 
+              className="border-primary text-primary hover:bg-primary hover:text-primary-foreground"
+              onClick={() => window.location.href = '/auth'}
+            >
               Log In
             </Button>
             <Button 
