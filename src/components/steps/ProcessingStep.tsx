@@ -55,12 +55,7 @@ export const ProcessingStep = ({ userData, nextStep, setImprovedResume }: Proces
   }, []);
 
   const improveResumeWithAI = async () => {
-    if (!userData.apiKey) {
-      throw new Error('No API key provided');
-    }
-
-    const prompt = `
-You are a professional resume improvement expert. Please improve the following resume for someone targeting a ${userData.targetRole} role in the ${userData.industry} industry with ${userData.experienceLevel} experience level.
+    const prompt = `You are a professional resume improvement expert. Please improve the following resume for someone targeting a ${userData.targetRole} role in the ${userData.industry} industry with ${userData.experienceLevel} experience level.
 
 Key skills to highlight: ${userData.keySkills?.join(', ')}
 Career goals: ${userData.careerGoals}
@@ -76,29 +71,21 @@ Please provide an improved version that:
 5. Uses industry-appropriate language
 6. Improves the overall structure and flow
 
-Return only the improved resume content, no additional commentary.
-`;
+Return only the improved resume content, no additional commentary.`;
 
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    const response = await fetch('/functions/v1/improve-resume', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${userData.apiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4',
-        messages: [
-          {
-            role: 'system',
-            content: 'You are a professional resume improvement expert. Provide clear, concise, and impactful improvements while maintaining the original structure and truthfulness of the content.'
-          },
-          {
-            role: 'user',
-            content: prompt
-          }
-        ],
-        max_tokens: 2000,
-        temperature: 0.7,
+        prompt,
+        targetRole: userData.targetRole,
+        industry: userData.industry,
+        experienceLevel: userData.experienceLevel,
+        keySkills: userData.keySkills,
+        careerGoals: userData.careerGoals,
+        originalResume: userData.originalResume
       }),
     });
 
@@ -107,7 +94,7 @@ Return only the improved resume content, no additional commentary.
     }
 
     const data = await response.json();
-    const improvedContent = data.choices[0]?.message?.content || '';
+    const improvedContent = data.improvedResume || '';
     setImprovedResume(improvedContent);
   };
 

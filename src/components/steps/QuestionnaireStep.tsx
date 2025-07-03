@@ -28,8 +28,7 @@ export const QuestionnaireStep = ({ userData, updateUserData, nextStep, prevStep
     industry: userData.industry || '',
     experienceLevel: userData.experienceLevel || '',
     keySkills: userData.keySkills || [],
-    careerGoals: userData.careerGoals || '',
-    apiKey: userData.apiKey || ''
+    careerGoals: userData.careerGoals || ''
   });
 
   const addSkill = (skill: string) => {
@@ -49,7 +48,7 @@ export const QuestionnaireStep = ({ userData, updateUserData, nextStep, prevStep
     nextStep();
   };
 
-  const isValid = formData.targetRole && formData.industry && formData.experienceLevel && formData.apiKey;
+  const isValid = formData.targetRole && formData.industry && formData.experienceLevel;
 
   return (
     <div className="min-h-screen flex items-center justify-center p-6">
@@ -138,23 +137,6 @@ export const QuestionnaireStep = ({ userData, updateUserData, nextStep, prevStep
               />
             </div>
 
-            <div className="bg-accent p-4 rounded-lg">
-              <Label htmlFor="apiKey" className="text-base font-medium">OpenAI API Key *</Label>
-              <p className="text-sm text-muted-foreground mb-3">
-                We need your OpenAI API key to improve your resume. Your key is used securely and never stored.
-              </p>
-              <Input
-                id="apiKey"
-                type="password"
-                placeholder="sk-..."
-                value={formData.apiKey}
-                onChange={(e) => setFormData({ ...formData, apiKey: e.target.value })}
-                className="mt-2"
-              />
-              <p className="text-xs text-muted-foreground mt-2">
-                Don't have an API key? <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Get one here</a>
-              </p>
-            </div>
           </div>
 
           <div className="flex justify-between mt-8">
