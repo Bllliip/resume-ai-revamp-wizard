@@ -37,14 +37,6 @@ export const PricingSection = ({ onStartImprovement }: PricingSectionProps) => {
                 <Check className="w-5 h-5 text-success" />
                 <span className="text-foreground">Basic AI optimization</span>
               </li>
-              <li className="flex items-center gap-3">
-                <Check className="w-5 h-5 text-success" />
-                <span className="text-foreground">Grammar and spell check</span>
-              </li>
-              <li className="flex items-center gap-3">
-                <Check className="w-5 h-5 text-success" />
-                <span className="text-foreground">ATS optimization</span>
-              </li>
             </ul>
             
             <Button 
