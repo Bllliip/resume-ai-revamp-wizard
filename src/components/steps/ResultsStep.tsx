@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import { Download, Copy, RefreshCw, FileText, CheckCircle } from 'lucide-react';
+import { Download, Copy, RefreshCw, FileText, CheckCircle, ArrowLeft } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 import { BaseStepProps } from '../ResumeImprover';
@@ -56,6 +56,18 @@ export const ResultsStep = ({ userData, improvedResume, prevStep }: ResultsStepP
   return (
     <div className="min-h-screen p-6">
       <div className="max-w-6xl mx-auto">
+        {/* Back Button */}
+        <div className="flex justify-end mb-4">
+          <Button
+            variant="outline"
+            onClick={prevStep}
+            className="flex items-center gap-2"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back
+          </Button>
+        </div>
+
         {/* Header */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-success rounded-2xl mb-4">
