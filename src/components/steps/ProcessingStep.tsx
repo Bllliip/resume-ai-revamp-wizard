@@ -55,67 +55,27 @@ export const ProcessingStep = ({ userData, nextStep, setImprovedResume }: Proces
   }, []);
 
   const improveResumeWithAI = async () => {
-    const prompt = `You are a professional resume improvement expert. 
-
-CRITICAL RULES - FOLLOW EXACTLY:
-1. DO NOT add any contact information (phone, email, LinkedIn, address) that is not already in the original resume
-2. DO NOT change the person's profession, industry, or job titles - keep them exactly as provided
-3. DO NOT add any experiences, jobs, companies, or skills that are not in the original resume
-4. DO NOT add any fake or example information
-5. ONLY improve the writing, formatting, and structure of the existing content
-6. If the original resume is about finance/banking, keep it about finance/banking
-7. If the original resume mentions specific companies, keep those exact company names
-8. If the original resume has certain skills, only use those skills
-
-The user wants to target: ${userData.targetRole || 'the same field as shown in their resume'}
-Industry: ${userData.industry || 'as shown in their resume'}
-Experience Level: ${userData.experienceLevel || 'as shown in their resume'}
-Skills they want to highlight: ${userData.keySkills?.join(', ') || 'skills from their existing resume'}
-Career Goals: ${userData.careerGoals || 'career progression in their current field'}
-
-ORIGINAL RESUME CONTENT (USE ONLY THIS INFORMATION):
-${userData.originalResume}
-
-TASK: Improve ONLY the existing content by:
-- Better grammar and professional language
-- Stronger action verbs for existing achievements
-- Better formatting and structure
-- More professional phrasing
-- Better organization of existing information
-
-DO NOT ADD:
-- Contact information not already present
-- Job experiences not mentioned
-- Skills not listed
-- Education not mentioned
-- Fake companies or achievements
-- Example content
-
-Return ONLY the improved resume using the exact information provided above.`;
-
-    const response = await fetch('/functions/v1/improve-resume', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        prompt,
-        targetRole: userData.targetRole,
-        industry: userData.industry,
-        experienceLevel: userData.experienceLevel,
-        keySkills: userData.keySkills,
-        careerGoals: userData.careerGoals,
-        originalResume: userData.originalResume
-      }),
-    });
-
-    if (!response.ok) {
-      throw new Error('Failed to improve resume');
+    try {
+      const { improveResumeWithChatGPT } = await import('@/api/chatgpt-functions/improve-resume');
+      
+      const result = await improveResumeWithChatGPT({
+        targetRole: userData.targetRole || '',
+        industry: userData.industry || '',
+        experienceLevel: userData.experienceLevel || '',
+        keySkills: userData.keySkills || [],
+        careerGoals: userData.careerGoals || '',
+        originalResume: userData.originalResume || ''
+      });
+      
+      setImprovedResume(result.improvedResume);
+      
+      if (result.warnings && result.warnings.length > 0) {
+        console.warn('Resume improvement warnings:', result.warnings);
+      }
+    } catch (error) {
+      console.error('Error improving resume with ChatGPT:', error);
+      throw error;
     }
-
-    const data = await response.json();
-    const improvedContent = data.improvedResume || '';
-    setImprovedResume(improvedContent);
   };
 
   const generateDemoImprovedResume = () => {
