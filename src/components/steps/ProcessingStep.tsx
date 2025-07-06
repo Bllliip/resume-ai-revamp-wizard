@@ -3,6 +3,7 @@ import { Card } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { UserData, BaseStepProps } from '../ResumeImprover';
 import { Sparkles, CheckCircle, Loader2 } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 
 interface ProcessingStepProps extends Partial<BaseStepProps> {
   userData: Partial<UserData>;
@@ -25,23 +26,68 @@ export const ProcessingStep = ({ userData, nextStep, setImprovedResume }: Proces
 
   useEffect(() => {
     const processResume = async () => {
-      // Simulate processing steps
-      for (let i = 0; i < processingSteps.length; i++) {
-        setCurrentStepIndex(i);
-        const stepProgress = ((i + 1) / processingSteps.length) * 100;
-        setProgress(stepProgress);
+      try {
+        // Simulate processing steps
+        for (let i = 0; i < processingSteps.length; i++) {
+          setCurrentStepIndex(i);
+          const stepProgress = ((i + 1) / processingSteps.length) * 100;
+          setProgress(stepProgress);
+          
+          // If this is the last step, make the actual API call
+          if (i === processingSteps.length - 1) {
+            try {
+              const { data, error } = await supabase.functions.invoke('improve-resume', {
+                body: {
+                  resume: userData.originalResume || '',
+                  targetRole: userData.targetRole || '',
+                  industry: userData.industry || '',
+                  experienceLevel: userData.experienceLevel || '',
+                  keySkills: userData.keySkills || [],
+                  careerGoals: userData.careerGoals || '',
+                  mode: 'rewrite',
+                  preserveStructure: true
+                }
+              });
+
+              if (error) {
+                console.error('Resume improvement error:', error);
+                throw error;
+              }
+
+              if (data?.improved_resume) {
+                setImprovedResume(data.improved_resume);
+                if (data.warnings && data.warnings.length > 0) {
+                  console.warn('Resume improvement warnings:', data.warnings);
+                }
+              } else {
+                throw new Error('No improved resume returned from API');
+              }
+            } catch (apiError) {
+              console.error('API call failed:', apiError);
+              // Fallback to original resume with a note
+              setImprovedResume(`${userData.originalResume}\n\n[Note: Resume improvement service is currently unavailable. Please try again later.]`);
+            }
+          }
+          
+          await new Promise(resolve => setTimeout(resolve, processingSteps[i].duration));
+        }
         
-        await new Promise(resolve => setTimeout(resolve, processingSteps[i].duration));
+        setIsComplete(true);
+        setTimeout(() => {
+          nextStep();
+        }, 1500);
+      } catch (error) {
+        console.error('Processing error:', error);
+        setImprovedResume(`${userData.originalResume}\n\n[Note: Resume improvement service encountered an error. Please try again later.]`);
+        setIsComplete(true);
+        setTimeout(() => {
+          nextStep();
+        }, 1500);
       }
-      
-      setIsComplete(true);
-      setTimeout(() => {
-        nextStep();
-      }, 1500);
     };
 
     processResume();
-  }, []);
+  }, [userData, nextStep, setImprovedResume]);
 
 
   return (

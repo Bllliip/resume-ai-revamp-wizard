@@ -1,1 +1,4 @@
 project_id = "zilwneliwmvkfnaylksz"
+
+[functions.improve-resume]
+verify_jwt = true
