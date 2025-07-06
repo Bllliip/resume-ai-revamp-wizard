@@ -31,17 +31,6 @@ export const ProcessingStep = ({ userData, nextStep, setImprovedResume }: Proces
         const stepProgress = ((i + 1) / processingSteps.length) * 100;
         setProgress(stepProgress);
         
-        // If this is the last step, make the API call
-        if (i === processingSteps.length - 1) {
-          try {
-            await improveResumeWithAI();
-          } catch (error) {
-            console.error('Error improving resume:', error);
-            // Fallback to demo content
-            setImprovedResume(generateDemoImprovedResume());
-          }
-        }
-        
         await new Promise(resolve => setTimeout(resolve, processingSteps[i].duration));
       }
       
@@ -54,71 +43,6 @@ export const ProcessingStep = ({ userData, nextStep, setImprovedResume }: Proces
     processResume();
   }, []);
 
-  const improveResumeWithAI = async () => {
-    try {
-      const { improveResumeWithChatGPT } = await import('@/api/chatgpt-functions/improve-resume');
-      
-      const result = await improveResumeWithChatGPT({
-        targetRole: userData.targetRole || '',
-        industry: userData.industry || '',
-        experienceLevel: userData.experienceLevel || '',
-        keySkills: userData.keySkills || [],
-        careerGoals: userData.careerGoals || '',
-        originalResume: userData.originalResume || ''
-      });
-      
-      setImprovedResume(result.improvedResume);
-      
-      if (result.warnings && result.warnings.length > 0) {
-        console.warn('Resume improvement warnings:', result.warnings);
-      }
-    } catch (error) {
-      console.error('Error improving resume with ChatGPT:', error);
-      throw error;
-    }
-  };
-
-  const generateDemoImprovedResume = () => {
-    return `[Demo Improved Resume - API Error Fallback]
-
-JOHN DOE
-Senior Software Engineer | Full-Stack Developer
-📧 john.doe@email.com | 📱 (555) 123-4567 | 🌐 linkedin.com/in/johndoe
-
-PROFESSIONAL SUMMARY
-Results-driven Senior Software Engineer with 8+ years of experience building scalable web applications and leading cross-functional teams. Expertise in React, Node.js, and cloud technologies. Proven track record of delivering high-quality software solutions that drive business growth and improve user experience.
-
-TECHNICAL SKILLS
-• Frontend: React, TypeScript, JavaScript, HTML5, CSS3, Redux
-• Backend: Node.js, Python, Express.js, RESTful APIs, GraphQL
-• Databases: PostgreSQL, MongoDB, Redis
-• Cloud & DevOps: AWS, Docker, Kubernetes, CI/CD pipelines
-• Tools: Git, Jest, Jenkins, Jira, Agile/Scrum methodologies
-
-PROFESSIONAL EXPERIENCE
-
-Senior Software Engineer | TechCorp Inc. | 2020 - Present
-• Led development of customer-facing web application serving 100K+ users, resulting in 25% increase in user engagement
-• Architected and implemented microservices architecture, reducing deployment time by 40%
-• Mentored 3 junior developers and conducted code reviews to maintain high code quality standards
-• Collaborated with product managers and designers to deliver features aligned with business objectives
-
-Software Engineer | Digital Solutions Ltd. | 2017 - 2020
-• Developed and maintained e-commerce platform handling $2M+ in annual transactions
-• Optimized database queries resulting in 50% improvement in page load times
-• Implemented automated testing suite achieving 85% code coverage
-• Participated in agile development process and sprint planning sessions
-
-EDUCATION
-Bachelor of Science in Computer Science | State University | 2017
-Relevant Coursework: Data Structures, Algorithms, Software Engineering, Database Systems
-
-CERTIFICATIONS
-• AWS Certified Solutions Architect - Associate (2021)
-• Certified Scrum Master (CSM) (2020)
-
-This is a demo version. Please provide a valid OpenAI API key for personalized improvements.`;
-  };
 
   return (
     <div className="min-h-screen flex items-center justify-center p-6">
