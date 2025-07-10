@@ -115,6 +115,14 @@ serve(async (req) => {
 - Use standard section headers (Professional Summary, Experience, Skills, Education)
 - Optimize keyword density without keyword stuffing
 
+✍️ WRITING STYLE IMPROVEMENTS:
+- Eliminate redundant phrasing (avoid "This involved..." - use direct action verbs instead)
+- Vary sentence starters and phrasing throughout bullet points
+- Use strong, diverse action verbs (Utilized, Employed, Managed, Implemented, etc.)
+- Make job objectives versatile (e.g., "seeking roles in financial analysis, corporate finance, or investment management" rather than specific titles)
+- Add dates to academic/independent projects for context (e.g., Fall 2023)
+- Ensure content is optimized for .docx and text-based PDF formats
+
 🎯 TARGET CONTEXT:
 - Role: ${targetRole} in ${industry}
 - Level: ${experienceLevel}
