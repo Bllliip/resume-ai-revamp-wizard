@@ -88,6 +88,13 @@ serve(async (req) => {
 - NEVER fabricate specific metrics, certifications, or experiences not mentioned
 - NEVER alter the core profession or career trajectory
 
+📋 FORMATTING REQUIREMENTS:
+- Ensure contact info is in plain text (not in header/footer)
+- Simplify and keyword-optimize summary section
+- Break down skills into clear, organized categories
+- Vary phrasing in bullet points to avoid repetition
+- Clarify CFA details and any certifications with full context
+
 ✅ ATS OPTIMIZATION TECHNIQUES:
 - Use exact keywords from the target role: ${targetRole}
 - Include industry-specific terminology for: ${industry}
