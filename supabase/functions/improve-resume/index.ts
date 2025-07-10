@@ -26,6 +26,21 @@ serve(async (req) => {
   }
 
   try {
+    // Check if OpenAI API key is configured
+    if (!openAIApiKey) {
+      console.error('OPENAI_API_KEY is not configured');
+      return new Response(
+        JSON.stringify({ 
+          error: 'OpenAI API key not configured',
+          improved_resume: null,
+          warnings: ['OpenAI API key is missing. Please configure it in the edge function secrets.']
+        }), 
+        {
+          status: 500,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        }
+      );
+    }
     const {
       resume,
       targetRole,
