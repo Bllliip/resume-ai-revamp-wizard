@@ -1,7 +1,7 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
-const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
+const geminiApiKey = Deno.env.get('GEMINI_API_KEY');
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -26,14 +26,14 @@ serve(async (req) => {
   }
 
   try {
-    // Check if OpenAI API key is configured
-    if (!openAIApiKey) {
-      console.error('OPENAI_API_KEY is not configured');
+    // Check if Gemini API key is configured
+    if (!geminiApiKey) {
+      console.error('GEMINI_API_KEY is not configured');
       return new Response(
         JSON.stringify({ 
-          error: 'OpenAI API key not configured',
+          error: 'Gemini API key not configured',
           improved_resume: null,
-          warnings: ['OpenAI API key is missing. Please configure it in the edge function secrets.']
+          warnings: ['Gemini API key is missing. Please configure it in the edge function secrets.']
         }), 
         {
           status: 500,
@@ -123,31 +123,32 @@ ${resume}
 
 Return ONLY the improved resume text with no additional commentary.`;
 
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${geminiApiKey}`, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${openAIApiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o',
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: userPrompt }
-        ],
-        temperature: 0.3, // Lower temperature for more consistent output
-        max_tokens: 4000,
+        contents: [{
+          parts: [{
+            text: `${systemPrompt}\n\n${userPrompt}`
+          }]
+        }],
+        generationConfig: {
+          temperature: 0.3,
+          maxOutputTokens: 4000,
+        }
       }),
     });
 
     if (!response.ok) {
       const error = await response.text();
-      console.error('OpenAI API error:', error);
-      throw new Error(`OpenAI API error: ${response.status}`);
+      console.error('Gemini API error:', error);
+      throw new Error(`Gemini API error: ${response.status}`);
     }
 
     const data = await response.json();
-    const improvedResume = data.choices[0].message.content;
+    const improvedResume = data.candidates[0].content.parts[0].text;
 
     // Generate warnings if needed
     const warnings = [];
