@@ -65,7 +65,8 @@ export const ProcessingStep = ({ userData, nextStep, setImprovedResume }: Proces
             } catch (apiError) {
               console.error('API call failed:', apiError);
               // Fallback to original resume with a note
-              setImprovedResume(`${userData.originalResume}\n\n[Note: Resume improvement service is currently unavailable. Please try again later.]`);
+              const fallbackMessage = `${userData.originalResume || ''}\n\n[Note: Resume improvement service is currently unavailable. Please try again later.]`;
+              setImprovedResume(fallbackMessage);
             }
           }
           
