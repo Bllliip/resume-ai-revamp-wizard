@@ -486,16 +486,17 @@ export const EditableCV = ({ initialResume, userData }: EditableCVProps) => {
         <Button
           onClick={generateDocx}
           className="flex items-center gap-2 bg-gradient-primary"
+          size="lg"
         >
-          <FileText className="w-4 h-4" />
-          Download DOCX
+          <Download className="w-4 h-4" />
+          Download Resume (.docx)
         </Button>
         <Button
           onClick={generatePDF}
           variant="outline"
           className="flex items-center gap-2"
         >
-          <Download className="w-4 h-4" />
+          <FileText className="w-4 h-4" />
           Download PDF
         </Button>
       </div>
