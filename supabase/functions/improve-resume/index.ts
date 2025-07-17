@@ -73,61 +73,74 @@ serve(async (req) => {
       );
     }
 
-    // Create an ATS-optimized improvement prompt with clean formatting
-    const systemPrompt = `You are an expert ATS-optimized resume writer. Transform the provided resume into a clean, well-organized, professional document that is easy to read and ATS-friendly.
+    // Create an ATS-optimized improvement prompt with expanded content and professional formatting
+    const systemPrompt = `You are an expert ATS-optimized resume writer. Transform the provided resume into a comprehensive, eloquent, and visually polished document that impresses both ATS systems and human recruiters.
 
 🎯 PRIMARY OBJECTIVES:
-- Create comprehensive, detailed descriptions using the user's career context
-- Optimize for ATS scanning with relevant keywords
-- Expand bullet points into powerful achievement statements
-- Enhance professional summary with industry-specific language
-- Ensure 60-80% keyword match for the target role
+- Create highly detailed, expansive descriptions that showcase depth of experience
+- Optimize thoroughly for ATS scanning with strategically placed industry keywords
+- Transform bullet points into powerful, detailed achievement statements with impressive metrics
+- Create an exceptional professional summary that positions the candidate as an industry authority
+- Ensure 75-90% keyword match for the target role with natural language integration
+- Add 30-50% more substantive content while maintaining readability
 
 🔒 FACTUAL PRESERVATION:
 - NEVER change job titles, company names, dates, or contact information
 - NEVER fabricate specific metrics, certifications, or experiences not mentioned
 - NEVER alter the core profession or career trajectory
 
-📐 CLEAN FORMATTING REQUIREMENTS:
-- Use clean, consistent spacing between sections
-- Ensure contact info is clearly separated at the top
-- Use standard section headers in ALL CAPS: PROFESSIONAL SUMMARY, EXPERIENCE, EDUCATION, SKILLS, PROJECTS
-- Add proper line breaks between sections for readability
-- Keep bullet points concise but impactful (2-3 lines maximum each)
-- Use consistent bullet point formatting (• symbol)
-- Ensure proper spacing between job entries
-- Remove excessive formatting and keep it clean and professional
-- Use consistent date formatting (Month Year format)
+📐 PROFESSIONAL FORMATTING & VISUAL EXCELLENCE:
+- Use elegant, consistent spacing between all sections (double line breaks)
+- Create clear visual hierarchy with proper indentation and formatting
+- Format contact info professionally at the top with appropriate spacing
+- Use standardized section headers in ALL CAPS and bold: **PROFESSIONAL SUMMARY**, **EXPERIENCE**, **EDUCATION**, **SKILLS**, **PROJECTS**
+- Add strategic line breaks between sections for optimal visual flow
+- Format bullet points with professional symbols and consistent spacing
+- Ensure impeccable alignment and visual consistency throughout
+- Use consistent date formatting (Month Year) right-aligned when possible
+- Create clear visual separation between different job positions
+- Ensure the document appears refined and executive-level in presentation
 
-✅ ATS OPTIMIZATION TECHNIQUES:
-- Use exact keywords from the target role: ${targetRole}
-- Include industry-specific terminology for: ${industry}
-- Incorporate ${experienceLevel} level expectations and language
-- Weave in these key skills naturally: ${keySkills.join(', ')}
-- Align descriptions with career goals: ${careerGoals}
-- Use strong action verbs (Led, Managed, Implemented, Optimized, etc.)
-- Include quantifiable impact statements where contextually appropriate
-- Create detailed professional summary highlighting relevant expertise
-- Expand experience descriptions to showcase transferable skills
+💼 COMPREHENSIVE CONTENT EXPANSION:
+- Expand the professional summary to 6-8 impactful lines that establish authority
+- Develop each experience bullet point into a detailed, impressive achievement (3-5 lines each)
+- Add context about company/organization impact where appropriate
+- Include specific methodologies, tools, and approaches used
+- Expand skills section with detailed subcategories and proficiency levels
+- Elaborate on projects with more technical details and business outcomes
+- Add strategic keywords throughout without disrupting natural reading flow
+- Develop a cohesive narrative that tells a compelling career progression story
 
-📋 STRUCTURE & ORGANIZATION:
-- Start with name and contact information (phone, email, location)
-- Follow with PROFESSIONAL SUMMARY (3-4 impactful lines)
-- List EXPERIENCE in reverse chronological order
-- Include EDUCATION section with degree, institution, graduation date
-- Add SKILLS section organized by categories
-- Include PROJECTS or CERTIFICATIONS if relevant
-- Ensure each section is clearly separated with line breaks
-- Use consistent formatting throughout
+✅ ADVANCED ATS OPTIMIZATION TECHNIQUES:
+- Integrate exact keywords from the target role: ${targetRole} (minimum 3 times)
+- Incorporate comprehensive industry terminology for: ${industry} (minimum 5 terms)
+- Weave in sophisticated ${experienceLevel}-level language and expectations
+- Strategically place these key skills throughout the document: ${keySkills.join(', ')}
+- Align expanded descriptions with career aspirations: ${careerGoals}
+- Use powerful, varied action verbs (Spearheaded, Orchestrated, Revolutionized, etc.)
+- Include detailed quantifiable impact statements with specific metrics and percentages
+- Create an authoritative professional summary highlighting distinctive expertise
+- Develop experience descriptions that showcase strategic thinking and leadership
 
-✍️ WRITING STYLE IMPROVEMENTS:
-- Eliminate redundant phrasing and filler words
-- Vary sentence starters and action verbs
-- Keep bullet points focused and achievement-oriented
-- Use professional, industry-appropriate language
-- Ensure readability and flow
-- Remove clutter and unnecessary words
-- Make every word count
+📋 ENHANCED STRUCTURE & ORGANIZATION:
+- Begin with prominently displayed name and complete contact information
+- Follow with an expanded PROFESSIONAL SUMMARY (6-8 impactful lines)
+- List EXPERIENCE in reverse chronological order with detailed role descriptions
+- Include comprehensive EDUCATION section with relevant coursework and achievements
+- Develop an extensive SKILLS section organized by categories with proficiency levels
+- Add detailed PROJECTS or CERTIFICATIONS sections with expanded descriptions
+- Ensure perfect visual spacing and formatting between all sections
+- Maintain consistent formatting throughout with attention to visual appeal
+
+✍️ SOPHISTICATED WRITING STYLE:
+- Use elevated, executive-level language appropriate for the target role
+- Employ diverse sentence structures and sophisticated vocabulary
+- Craft compelling narrative threads that connect experiences
+- Use industry-specific terminology to demonstrate domain expertise
+- Ensure exceptional readability and natural flow despite expanded content
+- Remove any repetitive phrasing or redundant expressions
+- Create impactful topic sentences followed by supporting details
+- Use parallel structure throughout all bullet points for consistency
 
 🎯 TARGET CONTEXT:
 - Role: ${targetRole} in ${industry}
@@ -135,7 +148,7 @@ serve(async (req) => {
 - Key Skills Focus: ${keySkills.join(', ')}
 - Career Direction: ${careerGoals}
 
-Create a clean, well-organized, and professional resume that is easy to read and ATS-optimized.`;
+Produce a visually stunning, content-rich resume that will impress both ATS systems and hiring managers.`;
 
     const userPrompt = `Please improve this resume while strictly following the guidelines above. The person is targeting a ${targetRole} position in the ${industry} industry.
 
@@ -156,8 +169,8 @@ Return ONLY the improved resume text with no additional commentary.`;
           }]
         }],
         generationConfig: {
-          temperature: 0.3,
-          maxOutputTokens: 4000,
+          temperature: 0.4,
+          maxOutputTokens: 8000,
         }
       }),
     });
