@@ -5,6 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Download, Copy, RefreshCw, FileText, CheckCircle, ArrowLeft } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { Document, Packer, Paragraph, TextRun, AlignmentType, HeadingLevel } from 'docx';
 
 import { BaseStepProps } from '../ResumeImprover';
 
@@ -35,14 +36,92 @@ export const ResultsStep = ({ userData, improvedResume, prevStep, goToStep }: Re
     }
   };
 
-  const downloadAsText = (content: string, filename: string) => {
-    const element = document.createElement('a');
-    const file = new Blob([content], { type: 'text/plain' });
-    element.href = URL.createObjectURL(file);
-    element.download = filename;
-    document.body.appendChild(element);
-    element.click();
-    document.body.removeChild(element);
+  const downloadAsDocx = async (content: string, filename: string) => {
+    try {
+      // Parse the resume content into sections
+      const lines = content.split('\n').filter(line => line.trim() !== '');
+      const paragraphs = [];
+      
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i].trim();
+        
+        // Check if this line looks like a heading (all caps, short, or has common heading patterns)
+        const isHeading = line.length < 50 && (
+          line === line.toUpperCase() || 
+          line.includes('SUMMARY') || 
+          line.includes('EXPERIENCE') || 
+          line.includes('EDUCATION') || 
+          line.includes('SKILLS') || 
+          line.includes('CONTACT') ||
+          line.includes('PROFILE') ||
+          line.includes('OBJECTIVE') ||
+          line.includes('QUALIFICATIONS') ||
+          line.includes('ACHIEVEMENTS') ||
+          line.includes('CERTIFICATIONS') ||
+          line.includes('PROJECTS')
+        );
+        
+        if (isHeading) {
+          paragraphs.push(
+            new Paragraph({
+              children: [
+                new TextRun({
+                  text: line,
+                  bold: true,
+                  size: 28,
+                }),
+              ],
+              spacing: {
+                after: 200,
+                before: 200,
+              },
+            })
+          );
+        } else {
+          paragraphs.push(
+            new Paragraph({
+              children: [
+                new TextRun({
+                  text: line,
+                  size: 22,
+                }),
+              ],
+              spacing: {
+                after: 120,
+              },
+            })
+          );
+        }
+      }
+      
+      const doc = new Document({
+        sections: [
+          {
+            properties: {},
+            children: paragraphs,
+          },
+        ],
+      });
+      
+      const buffer = await Packer.toBlob(doc);
+      const element = document.createElement('a');
+      element.href = URL.createObjectURL(buffer);
+      element.download = filename;
+      document.body.appendChild(element);
+      element.click();
+      document.body.removeChild(element);
+      
+      toast({
+        title: "Download successful",
+        description: "Resume downloaded as .docx file",
+      });
+    } catch (error) {
+      toast({
+        title: "Download failed",
+        description: "Please try again or copy the text manually",
+        variant: "destructive",
+      });
+    }
   };
 
   const improvements = [
@@ -124,9 +203,9 @@ export const ResultsStep = ({ userData, improvedResume, prevStep, goToStep }: Re
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => downloadAsText(
+                  onClick={() => downloadAsDocx(
                     activeTab === 'improved' ? improvedResume : userData.originalResume || '',
-                    activeTab === 'improved' ? 'improved-resume.txt' : 'original-resume.txt'
+                    activeTab === 'improved' ? 'improved-resume.docx' : 'original-resume.docx'
                   )}
                   className="flex items-center gap-2"
                 >
@@ -181,11 +260,11 @@ export const ResultsStep = ({ userData, improvedResume, prevStep, goToStep }: Re
             Make Changes
           </Button>
           <Button
-            onClick={() => downloadAsText(improvedResume, 'improved-resume.txt')}
+            onClick={() => downloadAsDocx(improvedResume, 'improved-resume.docx')}
             className="flex items-center gap-2 bg-gradient-primary"
           >
             <Download className="w-4 h-4" />
-            Download Improved Resume
+            Download Improved Resume (.docx)
           </Button>
         </div>
 
