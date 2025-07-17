@@ -9,6 +9,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { Sparkles, LogIn, UserPlus } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import type { User, Session } from '@supabase/supabase-js';
+import { Checkbox } from "@/components/ui/checkbox";
+import { TermsOfServiceDialog } from "@/components/ui/terms-of-service-dialog";
 
 const Auth = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -159,9 +161,19 @@ const Auth = () => {
 const LoginForm = ({ onSubmit, loading }: { onSubmit: (email: string, password: string) => void; loading: boolean }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [agreed, setAgreed] = useState(false);
+  const { toast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent) => {
+const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!agreed) {
+      toast({
+        title: "Agreement Required",
+        description: "Please accept the Terms of Service to continue",
+        variant: "destructive",
+      });
+      return;
+    }
     onSubmit(email, password);
   };
 
@@ -191,6 +203,12 @@ const LoginForm = ({ onSubmit, loading }: { onSubmit: (email: string, password: 
           className="bg-input border-border"
         />
       </div>
+      <div className="flex items-center space-x-2 mt-4">
+        <Checkbox id="login-terms" checked={agreed} onCheckedChange={(checked) => setAgreed(checked as boolean)} />
+        <label htmlFor="login-terms" className="text-sm text-muted-foreground">
+          I agree to the <TermsOfServiceDialog />
+        </label>
+      </div>
       <Button 
         type="submit" 
         className="w-full bg-gradient-primary text-primary-foreground hover:shadow-medium"
@@ -206,10 +224,20 @@ const SignUpForm = ({ onSubmit, loading }: { onSubmit: (email: string, password:
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [agreed, setAgreed] = useState(false);
   const { toast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent) => {
+const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!agreed) {
+      toast({
+        title: "Agreement Required",
+        description: "Please accept the Terms of Service to continue",
+        variant: "destructive",
+      });
+      return;
+    }
     
     if (password !== confirmPassword) {
       toast({
@@ -269,6 +297,12 @@ const SignUpForm = ({ onSubmit, loading }: { onSubmit: (email: string, password:
           required
           className="bg-input border-border"
         />
+      </div>
+      <div className="flex items-center space-x-2 mt-4">
+        <Checkbox id="signup-terms" checked={agreed} onCheckedChange={(checked) => setAgreed(checked as boolean)} />
+        <label htmlFor="signup-terms" className="text-sm text-muted-foreground">
+          I agree to the <TermsOfServiceDialog />
+        </label>
       </div>
       <Button 
         type="submit" 
