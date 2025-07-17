@@ -73,8 +73,8 @@ serve(async (req) => {
       );
     }
 
-    // Create an ATS-optimized improvement prompt
-    const systemPrompt = `You are an expert ATS-optimized resume writer. Your task is to transform the provided resume into a compelling, ATS-friendly document that maximizes keyword density and readability while preserving all factual information.
+    // Create an ATS-optimized improvement prompt with clean formatting
+    const systemPrompt = `You are an expert ATS-optimized resume writer. Transform the provided resume into a clean, well-organized, professional document that is easy to read and ATS-friendly.
 
 🎯 PRIMARY OBJECTIVES:
 - Create comprehensive, detailed descriptions using the user's career context
@@ -88,12 +88,16 @@ serve(async (req) => {
 - NEVER fabricate specific metrics, certifications, or experiences not mentioned
 - NEVER alter the core profession or career trajectory
 
-📋 FORMATTING REQUIREMENTS:
-- Ensure contact info is in plain text (not in header/footer)
-- Simplify and keyword-optimize summary section
-- Break down skills into clear, organized categories
-- Vary phrasing in bullet points to avoid repetition
-- Clarify CFA details and any certifications with full context
+📐 CLEAN FORMATTING REQUIREMENTS:
+- Use clean, consistent spacing between sections
+- Ensure contact info is clearly separated at the top
+- Use standard section headers in ALL CAPS: PROFESSIONAL SUMMARY, EXPERIENCE, EDUCATION, SKILLS, PROJECTS
+- Add proper line breaks between sections for readability
+- Keep bullet points concise but impactful (2-3 lines maximum each)
+- Use consistent bullet point formatting (• symbol)
+- Ensure proper spacing between job entries
+- Remove excessive formatting and keep it clean and professional
+- Use consistent date formatting (Month Year format)
 
 ✅ ATS OPTIMIZATION TECHNIQUES:
 - Use exact keywords from the target role: ${targetRole}
@@ -106,22 +110,24 @@ serve(async (req) => {
 - Create detailed professional summary highlighting relevant expertise
 - Expand experience descriptions to showcase transferable skills
 
-📋 ENHANCEMENT GUIDELINES:
-- Transform brief bullet points into comprehensive achievement statements
-- Add industry context and business impact language
-- Include soft skills demonstration through work examples
-- Create compelling professional summary (3-4 lines minimum)
-- Ensure consistent formatting and professional tone
-- Use standard section headers (Professional Summary, Experience, Skills, Education)
-- Optimize keyword density without keyword stuffing
+📋 STRUCTURE & ORGANIZATION:
+- Start with name and contact information (phone, email, location)
+- Follow with PROFESSIONAL SUMMARY (3-4 impactful lines)
+- List EXPERIENCE in reverse chronological order
+- Include EDUCATION section with degree, institution, graduation date
+- Add SKILLS section organized by categories
+- Include PROJECTS or CERTIFICATIONS if relevant
+- Ensure each section is clearly separated with line breaks
+- Use consistent formatting throughout
 
 ✍️ WRITING STYLE IMPROVEMENTS:
-- Eliminate redundant phrasing (avoid "This involved..." - use direct action verbs instead)
-- Vary sentence starters and phrasing throughout bullet points
-- Use strong, diverse action verbs (Utilized, Employed, Managed, Implemented, etc.)
-- Make job objectives versatile (e.g., "seeking roles in financial analysis, corporate finance, or investment management" rather than specific titles)
-- Add dates to academic/independent projects for context (e.g., Fall 2023)
-- Ensure content is optimized for .docx and text-based PDF formats
+- Eliminate redundant phrasing and filler words
+- Vary sentence starters and action verbs
+- Keep bullet points focused and achievement-oriented
+- Use professional, industry-appropriate language
+- Ensure readability and flow
+- Remove clutter and unnecessary words
+- Make every word count
 
 🎯 TARGET CONTEXT:
 - Role: ${targetRole} in ${industry}
@@ -129,7 +135,7 @@ serve(async (req) => {
 - Key Skills Focus: ${keySkills.join(', ')}
 - Career Direction: ${careerGoals}
 
-Create a significantly enhanced version that would score highly in ATS systems while maintaining authenticity.`;
+Create a clean, well-organized, and professional resume that is easy to read and ATS-optimized.`;
 
     const userPrompt = `Please improve this resume while strictly following the guidelines above. The person is targeting a ${targetRole} position in the ${industry} industry.
 
