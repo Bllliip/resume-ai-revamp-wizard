@@ -1,14 +1,25 @@
 import { useEffect, useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
+import { Button } from '@/components/ui/button';
 import { UserData, BaseStepProps } from '../ResumeImprover';
-import { Sparkles, CheckCircle, Loader2 } from 'lucide-react';
+import { Sparkles, CheckCircle, Loader2, AlertCircle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 
 interface ProcessingStepProps extends Partial<BaseStepProps> {
   userData: Partial<UserData>;
   nextStep: () => void;
   setImprovedResume: (resume: string) => void;
+  goToStep?: (stepIndex: number) => void;
+}
+
+interface UsageStatus {
+  success: boolean;
+  current_usage: number;
+  limit: number;
+  tier: string;
+  message: string;
 }
 
 const processingSteps = [
@@ -19,14 +30,44 @@ const processingSteps = [
   { label: 'Generating final improvements', duration: 3000 },
 ];
 
-export const ProcessingStep = ({ userData, nextStep, setImprovedResume }: ProcessingStepProps) => {
+export const ProcessingStep = ({ userData, nextStep, setImprovedResume, goToStep }: ProcessingStepProps) => {
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [progress, setProgress] = useState(0);
   const [isComplete, setIsComplete] = useState(false);
+  const [usageLimitExceeded, setUsageLimitExceeded] = useState(false);
+  const [usageStatus, setUsageStatus] = useState<UsageStatus | null>(null);
+  const { toast } = useToast();
 
   useEffect(() => {
     const processResume = async () => {
       try {
+        // First check usage limits
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) {
+          throw new Error('User not authenticated');
+        }
+
+        // Check if user can use the service
+        const { data: usageData, error: usageError } = await supabase
+          .rpc('increment_usage', { user_uuid: user.id });
+
+        if (usageError) {
+          console.error('Usage check error:', usageError);
+          throw new Error('Failed to check usage limits');
+        }
+
+        const typedUsageData = usageData as unknown as UsageStatus;
+        if (!typedUsageData.success) {
+          setUsageStatus(typedUsageData);
+          setUsageLimitExceeded(true);
+          toast({
+            title: "Usage Limit Reached",
+            description: `You've used ${typedUsageData.current_usage}/${typedUsageData.limit} resume improvements this month on the ${typedUsageData.tier} plan.`,
+            variant: "destructive",
+          });
+          return;
+        }
+
         // Simulate processing steps
         for (let i = 0; i < processingSteps.length; i++) {
           setCurrentStepIndex(i);
@@ -88,8 +129,78 @@ export const ProcessingStep = ({ userData, nextStep, setImprovedResume }: Proces
     };
 
     processResume();
-  }, [userData, nextStep, setImprovedResume]);
+  }, [userData, nextStep, setImprovedResume, toast]);
 
+
+  const handleUpgrade = async (planType: string) => {
+    try {
+      const { data, error } = await supabase.functions.invoke('create-checkout', {
+        body: { plan_type: planType }
+      });
+
+      if (error) throw error;
+
+      // Open Stripe checkout in a new tab
+      window.open(data.url, '_blank');
+    } catch (error) {
+      console.error('Checkout error:', error);
+      toast({
+        title: "Checkout Error",
+        description: "Failed to create checkout session. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  if (usageLimitExceeded) {
+    return (
+      <div className="min-h-screen flex items-center justify-center p-6">
+        <div className="max-w-2xl w-full">
+          <Card className="p-8 bg-gradient-card shadow-medium border-0 text-center">
+            <div className="mb-8">
+              <div className="inline-flex items-center justify-center w-20 h-20 bg-destructive rounded-2xl mb-6">
+                <AlertCircle className="w-10 h-10 text-destructive-foreground" />
+              </div>
+              <h2 className="text-3xl font-bold text-foreground mb-2">
+                Usage Limit Reached
+              </h2>
+              <p className="text-muted-foreground mb-4">
+                You've used {usageStatus?.current_usage}/{usageStatus?.limit} resume improvements this month on the {usageStatus?.tier} plan.
+              </p>
+              <p className="text-sm text-muted-foreground">
+                Upgrade to a premium plan to get 100 resume improvements per month, or wait until next month to use the free tier again.
+              </p>
+            </div>
+
+            <div className="space-y-4">
+              <div className="grid md:grid-cols-2 gap-4">
+                <Button 
+                  onClick={() => handleUpgrade('monthly')}
+                  className="bg-gradient-primary text-primary-foreground hover:shadow-strong"
+                >
+                  Upgrade to Monthly ($20/month)
+                </Button>
+                <Button 
+                  onClick={() => handleUpgrade('yearly')}
+                  variant="outline"
+                  className="border-primary text-primary hover:bg-primary hover:text-primary-foreground"
+                >
+                  Upgrade to Yearly ($40/year)
+                </Button>
+              </div>
+              <Button 
+                onClick={() => goToStep?.(0)}
+                variant="ghost"
+                className="w-full"
+              >
+                Back to Home
+              </Button>
+            </div>
+          </Card>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center p-6">

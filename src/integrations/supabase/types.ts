@@ -14,13 +14,85 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      subscribers: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          stripe_customer_id: string | null
+          subscribed: boolean
+          subscription_end: string | null
+          subscription_tier: string | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          stripe_customer_id?: string | null
+          subscribed?: boolean
+          subscription_end?: string | null
+          subscription_tier?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          stripe_customer_id?: string | null
+          subscribed?: boolean
+          subscription_end?: string | null
+          subscription_tier?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      usage_tracking: {
+        Row: {
+          created_at: string
+          id: string
+          month_year: string
+          subscription_tier: string | null
+          updated_at: string
+          usage_count: number
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          month_year: string
+          subscription_tier?: string | null
+          updated_at?: string
+          usage_count?: number
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          month_year?: string
+          subscription_tier?: string | null
+          updated_at?: string
+          usage_count?: number
+          user_id?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_usage_status: {
+        Args: { user_uuid: string }
+        Returns: Json
+      }
+      increment_usage: {
+        Args: { user_uuid: string }
+        Returns: Json
+      }
     }
     Enums: {
       [_ in never]: never

@@ -1,12 +1,35 @@
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Check, X } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 
 interface PricingSectionProps {
   onStartImprovement: () => void;
 }
 
 export const PricingSection = ({ onStartImprovement }: PricingSectionProps) => {
+  const { toast } = useToast();
+
+  const handleUpgrade = async (planType: string) => {
+    try {
+      const { data, error } = await supabase.functions.invoke('create-checkout', {
+        body: { plan_type: planType }
+      });
+
+      if (error) throw error;
+
+      // Open Stripe checkout in a new tab
+      window.open(data.url, '_blank');
+    } catch (error) {
+      console.error('Checkout error:', error);
+      toast({
+        title: "Checkout Error",
+        description: "Failed to create checkout session. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
   return (
     <section id="pricing" className="py-20 px-6 bg-card">
       <div className="max-w-6xl mx-auto">
@@ -73,7 +96,7 @@ export const PricingSection = ({ onStartImprovement }: PricingSectionProps) => {
             <ul className="space-y-4 mb-8">
               <li className="flex items-center gap-3">
                 <Check className="w-5 h-5 text-success" />
-                <span className="text-foreground">Unlimited resume generations</span>
+                <span className="text-foreground">100 resume generations/month</span>
               </li>
               <li className="flex items-center gap-3">
                 <Check className="w-5 h-5 text-success" />
@@ -94,7 +117,7 @@ export const PricingSection = ({ onStartImprovement }: PricingSectionProps) => {
             </ul>
             
             <Button 
-              onClick={onStartImprovement}
+              onClick={() => handleUpgrade('monthly')}
               className="w-full bg-gradient-primary text-primary-foreground hover:shadow-strong"
             >
               Start Pro Monthly
@@ -105,11 +128,11 @@ export const PricingSection = ({ onStartImprovement }: PricingSectionProps) => {
           <Card className="p-8 bg-gradient-card border border-border shadow-soft">
             <div className="text-center mb-6">
               <h3 className="text-2xl font-bold text-foreground mb-2">Pro Yearly</h3>
-              <div className="text-4xl font-bold text-primary mb-2">$60</div>
+              <div className="text-4xl font-bold text-primary mb-2">$40</div>
               <p className="text-muted-foreground">per year</p>
               <div className="mt-2">
                 <span className="bg-success/20 text-success px-2 py-1 rounded text-sm font-semibold">
-                  Save 75%
+                  Save 83%
                 </span>
               </div>
             </div>
@@ -121,7 +144,7 @@ export const PricingSection = ({ onStartImprovement }: PricingSectionProps) => {
               </li>
               <li className="flex items-center gap-3">
                 <Check className="w-5 h-5 text-success" />
-                <span className="text-foreground">Massive savings ($180 value)</span>
+                <span className="text-foreground">Massive savings ($200 value)</span>
               </li>
               <li className="flex items-center gap-3">
                 <Check className="w-5 h-5 text-success" />
@@ -134,7 +157,7 @@ export const PricingSection = ({ onStartImprovement }: PricingSectionProps) => {
             </ul>
             
             <Button 
-              onClick={onStartImprovement}
+              onClick={() => handleUpgrade('yearly')}
               variant="outline" 
               className="w-full border-primary text-primary hover:bg-primary hover:text-primary-foreground"
             >
