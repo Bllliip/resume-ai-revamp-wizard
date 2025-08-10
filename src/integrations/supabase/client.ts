@@ -8,7 +8,13 @@ const SUPABASE_PUBLISHABLE_KEY = "";
 // Import the supabase client like this:
 // import { supabase } from "@/integrations/supabase/client";
 
-export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+const LOCAL_SUPABASE_URL = typeof localStorage !== 'undefined' ? localStorage.getItem('SUPABASE_URL') : null;
+const LOCAL_SUPABASE_ANON = typeof localStorage !== 'undefined' ? localStorage.getItem('SUPABASE_ANON_KEY') : null;
+
+const RESOLVED_URL = LOCAL_SUPABASE_URL || SUPABASE_URL;
+const RESOLVED_ANON = LOCAL_SUPABASE_ANON || SUPABASE_PUBLISHABLE_KEY;
+
+export const supabase = createClient<Database>(RESOLVED_URL, RESOLVED_ANON, {
   auth: {
     storage: localStorage,
     persistSession: true,
