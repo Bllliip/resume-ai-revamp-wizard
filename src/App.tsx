@@ -7,7 +7,7 @@ import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Success from "./pages/Success";
 import NotFound from "./pages/NotFound";
-
+import ConnectSupabase from "./pages/ConnectSupabase";
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -20,6 +20,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/success" element={<Success />} />
+          <Route path="/connect" element={<ConnectSupabase />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

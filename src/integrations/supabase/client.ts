@@ -2,11 +2,21 @@
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from './types';
 
-const SUPABASE_URL = "https://zilwneliwmvkfnaylksz.supabase.co";
-const SUPABASE_PUBLISHABLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InppbHduZWxpd212a2ZuYXlsa3N6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE1NTA4MTgsImV4cCI6MjA2NzEyNjgxOH0.H6tm9fppU7brEHjDXkJlU5wa7dwrXwAw2TaYPTerTfs";
+const LOCAL_URL = localStorage.getItem('SUPABASE_URL')?.trim();
+const LOCAL_ANON = localStorage.getItem('SUPABASE_ANON_KEY')?.trim();
 
-// Import the supabase client like this:
-// import { supabase } from "@/integrations/supabase/client";
+const FALLBACK_SUPABASE_URL = "https://zilwneliwmvkfnaylksz.supabase.co";
+const FALLBACK_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InppbHduZWxpd212a2ZuYXlsa3N6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE1NTA4MTgsImV4cCI6MjA2NzEyNjgxOH0.H6tm9fppU7brEHjDXkJlU5wa7dwrXwAw2TaYPTerTfs";
+
+const SUPABASE_URL = LOCAL_URL && LOCAL_URL.length > 0 ? LOCAL_URL : FALLBACK_SUPABASE_URL;
+const SUPABASE_PUBLISHABLE_KEY = LOCAL_ANON && LOCAL_ANON.length > 0 ? LOCAL_ANON : FALLBACK_SUPABASE_ANON_KEY;
+
+if (!SUPABASE_URL) {
+  console.error("Supabase URL missing. Visit /connect to set it in your browser.");
+}
+if (!SUPABASE_PUBLISHABLE_KEY) {
+  console.error("Supabase anon key missing. Visit /connect to set it in your browser.");
+}
 
 export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
   auth: {
