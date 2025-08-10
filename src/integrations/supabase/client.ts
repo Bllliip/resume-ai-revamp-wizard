@@ -8,8 +8,8 @@ const SUPABASE_PUBLISHABLE_KEY = "";
 // Import the supabase client like this:
 // import { supabase } from "@/integrations/supabase/client";
 
-const LOCAL_SUPABASE_URL = typeof localStorage !== 'undefined' ? localStorage.getItem('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFibnpkbmpraW9lYmVnenZvb2xkIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NDg0OTE0MCwiZXhwIjoyMDcwNDI1MTQwfQ.qsbCItMBHRLuIT9sFzIVlJINy7ttxNyvMBdGSwiFA1A') : null;
-const LOCAL_SUPABASE_ANON = typeof localStorage !== 'undefined' ? localStorage.getItem('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFibnpkbmpraW9lYmVnenZvb2xkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ4NDkxNDAsImV4cCI6MjA3MDQyNTE0MH0.pVax3Wgi-q1tWY3TzsRFUScpgDWhAnMsgCKQGMBivXk') : null;
+const LOCAL_SUPABASE_URL = typeof localStorage !== 'undefined' ? localStorage.getItem('SUPABASE_URL') : null;
+const LOCAL_SUPABASE_ANON = typeof localStorage !== 'undefined' ? localStorage.getItem('SUPABASE_ANON_KEY') : null;
 
 const RESOLVED_URL = LOCAL_SUPABASE_URL || SUPABASE_URL;
 const RESOLVED_ANON = LOCAL_SUPABASE_ANON || SUPABASE_PUBLISHABLE_KEY;
