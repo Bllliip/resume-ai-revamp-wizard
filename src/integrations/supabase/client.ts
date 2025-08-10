@@ -2,19 +2,13 @@
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from './types';
 
-const SUPABASE_URL = "";
-const SUPABASE_PUBLISHABLE_KEY = "";
+const SUPABASE_URL = "https://zilwneliwmvkfnaylksz.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InppbHduZWxpd212a2ZuYXlsa3N6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE1NTA4MTgsImV4cCI6MjA2NzEyNjgxOH0.H6tm9fppU7brEHjDXkJlU5wa7dwrXwAw2TaYPTerTfs";
 
 // Import the supabase client like this:
 // import { supabase } from "@/integrations/supabase/client";
 
-const LOCAL_SUPABASE_URL = typeof localStorage !== 'undefined' ? localStorage.getItem('SUPABASE_URL') : null;
-const LOCAL_SUPABASE_ANON = typeof localStorage !== 'undefined' ? localStorage.getItem('SUPABASE_ANON_KEY') : null;
-
-const RESOLVED_URL = LOCAL_SUPABASE_URL || SUPABASE_URL;
-const RESOLVED_ANON = LOCAL_SUPABASE_ANON || SUPABASE_PUBLISHABLE_KEY;
-
-export const supabase = createClient<Database>(RESOLVED_URL, RESOLVED_ANON, {
+export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
   auth: {
     storage: localStorage,
     persistSession: true,
